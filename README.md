@@ -1,7 +1,3 @@
-# Scanner-de-Portas-TCP
-Scanner de Portas TCP
-
-
 # Port Scanner (Go) 🐹
 
 Um scanner de portas TCP simples, escrito em **Go**, pensado como projeto de aprendizado para **Cybersecurity** (pentest básico). Ele verifica um intervalo de portas em um alvo e lista as portas abertas.
@@ -59,5 +55,66 @@ func main() {
 
     for port := startPort; port <= endPort; port++ {
         address := fmt.Sprintf("%s:%d", target, port)
-        conn, err := net.DialTimeout(
+        conn, err := net.DialTimeout("tcp", address, 500*time.Millisecond)
+        if err != nil {
+            continue
+        }
+        conn.Close()
+        fmt.Printf("✅ Porta aberta: %d\n", port)
+    }
+}
 ```
+
+---
+
+## Instalar e executar
+
+1. Clone ou copie o código para uma pasta:
+
+```bash
+git clone <repo-ou-copia-do-codigo>
+cd portscanner
+```
+
+2. Compilar (build):
+
+```bash
+go build portscanner.go
+```
+
+3. Executar:
+
+```bash
+./portscanner
+```
+
+> Para rodar sem compilar:
+>
+> ```bash
+> go run portscanner.go
+> ```
+
+---
+
+## Sugestões de melhorias (próximos passos)
+
+1. **Concorrência com goroutines** — paralelizar o escaneamento para acelerar o processo.
+2. **Linha de comando (flags)** — permitir configurar alvo, intervalos de portas, timeout e número máximo de goroutines via `flag`.
+3. **Detecção de banners** — ler respostas dos serviços nas portas abertas para identificar serviços/versionamento.
+4. **Saída em diferentes formatos** — JSON, CSV ou relatório em texto para integração com outras ferramentas.
+5. **Rate limiting / Throttling** — evitar sobrecarregar redes ou sistemas alvo.
+6. **Modo seguro / whitelist** — checar se alvo está na lista de permissões antes de escanear.
+
+---
+
+## Exemplo de uso avançado (sugestão)
+
+```bash
+# build com nome custom
+go build -o portscan portscanner.go
+
+# executar (exemplo) - alvo e range como flags (se implementado)
+./portscan -target 192.168.0.10 -start 1 -end 65535 -timeout 300
+```
+
+---
